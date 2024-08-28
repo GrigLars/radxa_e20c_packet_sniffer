@@ -2,10 +2,14 @@
 I built a packet sniffer with a Radxa E20C. Here's how in the short form.
 
 ### Background
+![Picture of ax3000.](ax3000-wap.png)
 
 I bought a really suspicious Wavelink wireless access point, a Wavlink AX3000 Gaming WIFI 6 Router Dual Band for a mere $30 from AliExpress. I was suprised it worked, and actually worked fairly well. Then I was surpsied that it made tens of thosuands of requests to my pi-hole for qqq.com and other things.  WTF was it doing?  Why was it trying to get helper.rumble.network?  Thank goodness I segmented it to a "trash VLAN" for things I am not sure where they came from. I wanted to see what other traffic was going on from a simple WAP besides sktechy DNS queries. 
 
 I had a tiny Radxa E20C with 2 GB NICs I decided to set up.
+
+![Picture of E20C.](e20c.png)
+
 https://radxa.com/products/network-computer/e20c/
 
 First, I installed their Debian image (not iStoreOS).  Then I set it up via the debug port.  This required the following settings on minicom:
@@ -52,7 +56,6 @@ Now for all the network voodoo.
 # Configure iptables to forward 
 sudo iptables -A FORWARD -i enp1s0 -o eth0 -j ACCEPT
 sudo iptables -A FORWARD -i eth0 -o enp1s0 -j ACCEPT
-sudo apt-get install iptables-persistent
 sudo iptables-save > /etc/iptables/rules.v4
 
 # Configure the sysctl
@@ -60,7 +63,7 @@ sudo sysctl -w net.ipv4.ip_forward=1
 sudo vim /etc/sysctl.conf   # uncomment the ipv4.ip_forward = 1
 sudo sysctl -p
 ```
-Now we;'re ready.  I had to do this via the serial console, because the IPs on the interfaces are about to go bye-bye.
+Now we're ready.  I had to do this via the serial console, because the IPs on the interfaces are about to go bye-bye.
 ```
 # Connect the two pieces ot the bridge together - note, this will hang up .99 and .101, so be on serial port?
 sudo nmcli con up bridge-slave-enp1s0
